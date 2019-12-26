@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Suktas</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="loading_please_wait">Loading. Please wait...</string>
+
+     <string name="app_descrip">Suktas can be called as the summaries of the vedas, This application tries to explain the meaning of each verse of the Purusha Sukta, Narayana Sukta, Sri Sukta and Durga Sukta. You can easily listen(offline) to the suktas verse by verse and read the meaning along with it. </string>
+    <string name="app_help">Swipe left/right to browse through all the shlokas.
+    </string>
+    <string name="app_credits">All images/media are copyrights of the respective owners wherever applicable.</string>
+    <string name="app_author">&#169; Varun M Tayur, 2019</string>
+    <string name="app_credits_title">Credits</string>
+    <string name="madhvanamaAdvtText">One of the most popular works of Shripadaraja is madhvanama. This is a kannada poem extolling Vayu Devaru and his three incarnations. It follows the structure of Shri Hari-Vayu stuti and was composed by Shripadarajaru for the benefit of those who don\'t know sanskrit and or are not allowed to recite the Vayu-stuti.</string>
+</resources>
