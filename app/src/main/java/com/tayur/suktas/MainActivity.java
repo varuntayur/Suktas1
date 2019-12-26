@@ -30,6 +30,9 @@ import com.tayur.suktas.detail.common.CustomAdapter;
 import com.tayur.suktas.detail.settings.SettingsActivity;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,44 +41,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
-//        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.loading_please_wait), true);
-
-//        new DataProviderTask(this).execute(getAssets());
+        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.loading_please_wait), true);
 
         DataProvider.init(getAssets());
-        Log.d(TAG, "Finished background task execution.");
+        initPreferences();
+        initLayout();
 
-        final List<String> sectionNames = DataProvider.getMenuNames();
+        progressDialog.dismiss();
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (position > 0)
-                    return 1;
-                else
-                    return 2;
-            }
-        });
-        CustomAdapter customAdapter = new CustomAdapter(this, sectionNames);
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.getRecycledViewPool().clear();
-        recyclerView.setAdapter(customAdapter); // set the Adapter to RecyclerView
-
-        recyclerView.setLayoutManager(layoutManager);
     }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
 
 
     @Override
@@ -117,80 +96,55 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private class DataProviderTask extends AsyncTask<AssetManager, Void, Long> {
-
-        Activity currentActivity;
-
-        public DataProviderTask(Activity activity) {
-            this.currentActivity = activity;
-        }
-
-        protected void onPostExecute(Long result) {
-            final LayoutInflater inflater = currentActivity.getLayoutInflater();
-            final Activity activity = this.currentActivity;
-            runOnUiThread(() -> {
-
-//                final List<String> sectionNames = DataProvider.getMenuNames();
-
-                SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
-                String isLocalLangAlreadySaved = settings.getString(DataProvider.SHLOKA_DISP_LANGUAGE, "");
-                String isLearningModeSaved = settings.getString(DataProvider.LEARNING_MODE, "");
-                if (isLocalLangAlreadySaved.isEmpty()) {
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString(DataProvider.SHLOKA_DISP_LANGUAGE, Language.san.toString());
-
-                    editor.commit();
-
-                    Log.d(TAG, "Setting the default launch language preference to Sanskrit at startup - " + settings.getString(DataProvider.SHLOKA_DISP_LANGUAGE, ""));
-                }
-
-                if (isLearningModeSaved.isEmpty()) {
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString(DataProvider.LEARNING_MODE, YesNo.yes.toString());
-
-                    editor.commit();
-
-                    Log.d(TAG, "Setting the default learn mode preference to 'Yes' - " + settings.getString(DataProvider.LEARNING_MODE, ""));
-                }
-
-
-//                GridLayoutManager layoutManager = new GridLayoutManager(activity, 2);
-//
-//                layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//                    @Override
-//                    public int getSpanSize(int position) {
-//                        if (position > 0)
-//                            return 1;
-//                        else
-//                            return 2;
-//                    }
-//                });
-//                CustomAdapter customAdapter = new CustomAdapter(activity, sectionNames);
-//
-//                RecyclerView recyclerView = findViewById(R.id.recycler_view);
-//                recyclerView.getRecycledViewPool().clear();
-//                recyclerView.setAdapter(customAdapter); // set the Adapter to RecyclerView
-//
-//                recyclerView.setLayoutManager(layoutManager);
-                progressDialog.dismiss();
-            });
-            Log.d(TAG, "Finished launching main-menu");
-
-        }
-
-        @Override
-        protected Long doInBackground(AssetManager... assetManagers) {
-
-            DataProvider.init(getAssets());
-            Log.d(TAG, "Finished background task execution.");
-            return 1l;
-        }
-    }
-
     public void launchMadhvanama(View v) {
         Intent intent = new Intent("android.intent.action.VIEW");
         intent.setData(Uri.parse("market://details?id=com.vtayur.madhvanama"));
         startActivity(intent);
+    }
+
+    private void initLayout() {
+        final List<String> sectionNames = DataProvider.getMenuNames();
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (position > 0)
+                    return 1;
+                else
+                    return 2;
+            }
+        });
+        CustomAdapter customAdapter = new CustomAdapter(this, sectionNames);
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.getRecycledViewPool().clear();
+        recyclerView.setAdapter(customAdapter); // set the Adapter to RecyclerView
+
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void initPreferences() {
+        SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
+        String isLocalLangAlreadySaved = settings.getString(DataProvider.SHLOKA_DISP_LANGUAGE, "");
+        String isLearningModeSaved = settings.getString(DataProvider.LEARNING_MODE, "");
+        if (isLocalLangAlreadySaved.isEmpty()) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString(DataProvider.SHLOKA_DISP_LANGUAGE, Language.san.toString());
+
+            editor.commit();
+
+            Log.d(TAG, "Setting the default launch language preference to Sanskrit at startup - " + settings.getString(DataProvider.SHLOKA_DISP_LANGUAGE, ""));
+        }
+
+        if (isLearningModeSaved.isEmpty()) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString(DataProvider.LEARNING_MODE, YesNo.yes.toString());
+
+            editor.commit();
+
+            Log.d(TAG, "Setting the default learn mode preference to 'Yes' - " + settings.getString(DataProvider.LEARNING_MODE, ""));
+        }
     }
 }
