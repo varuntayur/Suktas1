@@ -2,7 +2,6 @@ package com.tayur.suktas.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 import java.io.Serializable;

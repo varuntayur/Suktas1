@@ -6,14 +6,12 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.tayur.suktas.data.model.Section;
-import com.tayur.suktas.data.model.Sukta;
 import com.tayur.suktas.detail.common.BundleArgs;
 import com.tayur.suktas.detail.stotra.StotraInOnePageActivity;
 import com.tayur.suktas.detail.stotra.StotraSlideBrowseActivity;
 
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Created by varuntayur on 6/21/2014.
