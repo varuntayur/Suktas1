@@ -7,8 +7,8 @@ android {
         applicationId "com.vtayur.Suktas"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 2000
-        versionName "2.0"
+        versionCode 2001
+        versionName "2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
