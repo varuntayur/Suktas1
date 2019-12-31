@@ -18,6 +18,7 @@ package com.tayur.suktas.detail.stotra;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -70,6 +72,9 @@ public class StotraInOnePageActivity extends FragmentActivity {
         List<Shloka> localLangShlokas = (List<Shloka>) getIntent().getSerializableExtra(BundleArgs.LOCAL_LANG_SHLOKA_LIST);
         String sectionName = getIntent().getStringExtra(BundleArgs.SECTION_NAME);
 
+        if (menuPosition <= 0) {
+            menuPosition = 1;
+        }
         rootLayout.setBackgroundResource(DataProvider.getBackgroundColor(menuPosition - 1));
 
         TextView tvTitle = (TextView) findViewById(R.id.sectiontitle);
@@ -91,8 +96,9 @@ public class StotraInOnePageActivity extends FragmentActivity {
             localLang.setTypeface(typeface);
             localLang.setText(shlokaPair.second.getText());
 
-            TextView engLang = new TextView(this);
-            engLang.setText(shlokaPair.first.getText());
+            WebView engLang = new WebView(this);
+            engLang.setBackgroundColor(Color.TRANSPARENT);
+            engLang.loadData(shlokaPair.first.getText().isEmpty() ? shlokaPair.first.getFormattedExplanation() : shlokaPair.first.getText(), "text/html", null);
 
             ll.addView(localLang);
             ll.addView(engLang);
